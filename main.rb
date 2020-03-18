@@ -38,4 +38,28 @@ module  Enumerable
     end
   end
   
+  def my_select
+    return to_enum :my_select unless block_given?
+    items = self
+
+    items = items.to_a if items.is_a? Range
+    if items.is_a?(Array)
+
+      new_values = Array.new
+
+      items.my_each {|i| new_values.push(i) if yield(i) == true }
+
+      return new_values
+
+    elsif items.is_a?(Hash)
+
+      new_values = Hash.new
+
+      items.my_each {|a, b| new_values.store(a, b) if yield(a, b) == true}
+      return new_values
+    else
+      return items
+    end
+  end
+
   
