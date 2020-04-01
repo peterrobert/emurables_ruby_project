@@ -146,14 +146,14 @@ def my_count(*parms)
   return_value
 end
 
-def my_map(parms = nil)
-  return to_enum(:my_map) unless block_given?
+  def my_map(parms = nil)
+    return to_enum(:my_map) unless block_given?
 
-  mapped = []
-  my_each { |i| mapped << parms.call(i) } if block_given? && parms
-  my_each { |i| mapped << yield(i) } if parms.nil?
-  mapped
-end
+    mapped = []
+    my_each { |i| mapped << parms.call(i) } if block_given? && parms
+    my_each { |i| mapped << yield(i) } if parms.nil?
+    mapped
+  end
 
 def my_inject(results = nil, sym = nil, &parms)
   results = results.to_sym if results.is_a?(String) && !sym && !parms
@@ -169,6 +169,19 @@ def my_inject(results = nil, sym = nil, &parms)
   my_each { |i| results = results.nil? ? i : parms.yield(results, i) }
   results
 end
+
+def multiply_els(my_array)
+  my_array.my_inject { |result, value| result * value }
 end
+
+end
+
+
+
+a = [1,2,3,4,4,5,5,6,6,6,7,7,7]
+
+a.my_each do |i|
+
+  puts i
 
 end
