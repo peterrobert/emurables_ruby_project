@@ -1,7 +1,9 @@
 module  Enumerable
 
   def my_each ( &parm )
+
     return to_enum :my_each unless block_given?
+
     item = self;
     i = 0
     while i < item.length
@@ -14,27 +16,24 @@ module  Enumerable
       end 
       i += 1
     end
+   item
   end
 
-  def my_each_with_index 
+  def my_each_with_index ( &parm )
     return to_enum :my_each unless block_given?
     item = self;
     i = 0
     while i < item.length
-
       if item.is_a?(Array)
- 
-        yield [i],item[i]
-
-        i += 1
- 
-      elsif item.is_a?(Hash)
-        yield [i],item.keys[i], item[item.keys[i]] 
-        i += 1
+        yield item[i], i
+      elsif parm.arity == 1
+        yield  ( assoc item.keys[i]) 
       else
-        yield(item)
+        yield item.keys[i] , item[item.keys[i]], i
       end 
+      i += 1
     end
+   item
   end
   
   def my_select
@@ -42,6 +41,7 @@ module  Enumerable
     items = self
 
     items = items.to_a if items.is_a? Range
+
     if items.is_a?(Array)
 
       new_values = Array.new
@@ -61,50 +61,89 @@ module  Enumerable
     end
   end
 
-  def my_all(argument = nil)
-    if argument.nil? && !block_given?
-      for value in self do
-        matches = value.nil? || !value == true
-        break if matches
+  def my_all?( parms = nil )
+
+    item = self;
+
+    if parms.nil? && !block_given?
+      for value in item do
+        results = value.nil? || !value == true
+        break if results
       end
-      !matches
-    elsif argument.nil?
-      for value in self do
-        matches = yield(value)
-        break unless matches
+      !results
+    elsif parms.nil?
+      for value in item do
+        results = yield(value)
+        break unless results
       end
-      matches
-    elsif argument.is_a?(Regexp)
-      for value in self do
-        matches = value.to_s.match?(argument)
-        break unless matches
+      results
+    elsif parms.is_a?(Regexp)
+      for value in item do
+        results = value.to_s.match?(parms)
+        break unless results
       end
-      matches
-    elsif argument.is_a?(Class)
-      for value in self do
-        matches = value.is_a?(argument)
-        break unless matches
+      results
+    elsif parms.is_a?(Class)
+      for value in item do
+        results = value.is_a?(parms)
+        break unless results
       end
-      matches
+      results
     else
-      for value in self do
-        matches = value == argument
-        break unless matches
+      for value in item do
+        results = value == parms
+        break unless results
       end
-      matches
+      results
+    end
+end  
+
+def my_any?(*parms)
+  item = self
+  res = false
+  if block_given?
+    item.my_each do |i|
+      res = true if yield(i)
+    end
+  elsif !parms[0].nil?
+    item.my_each do |i|
+      res = true if parms[0] === i
+    end
+  elsif item.empty? && parms[0].nil?
+    res = false
+  else
+    item.my_each do |i|
+      res = true if i
     end
   end
-end  
-a = {
-  "a" => 9,
-  "b" => 8,
-  "c" => 0,
-  "d" => 4,
-  "e" => 97,
-  "f" => 82
-}
-a.my_each do |i , k|
-
-
+  res
 end
 
+def my_none?(*parms)
+  my_each_with_index do |item, i|
+    if block_given?
+      return false if yield(item)
+    elsif parms.length == 1
+      return false if parms[0] === item
+    elsif true === item
+      return false
+    end
+    return true if i == length - 1
+  end
+  true if length.zero?
+end
+
+def my_count(*parms)
+  return_value = 0
+  sum_one = ->(bool) { return_value += 1 if bool }
+
+  if block_given?
+    my_each { |i| sum_one.call(yield(i)) }
+  else
+    my_each { |i| parms.empty? ? return_value += 1 : sum_one.call(parms[0] == i) }
+  end
+
+  return_value
+end
+
+end
