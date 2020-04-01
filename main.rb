@@ -7,9 +7,9 @@ module Enumerable
     i = 0
     while i < item.length
       if item.is_a?(Array)
-        yield(item[i]) 
+        yield(item[i])
       elsif parm.arity == 1
-        yield  (assoc item.keys[i])
+        yield(assoc item.keys[i])
       else
         yield item.keys[i], item[item.keys[i]]
       end
@@ -18,21 +18,22 @@ module Enumerable
    item
   end
 
-  def my_each_with_index (&parm)
+  def my_each_with_index(&parm)
     return to_enum :my_each unless block_given?
-    item = self;
+
+    item = self
     i = 0
     while i < item.length
       if item.is_a?(Array)
         yield item[i], i
       elsif parm.arity == 1
-        yield  ( assoc item.keys[i]) 
+        yield(assoc item.keys[i])
       else
-        yield item.keys[i] , item[item.keys[i]], i
-      end 
+        yield item.keys[i], item[item.keys[i]], i
+      end
       i += 1
     end
-   item
+    item
   end
   
   def my_select
@@ -43,17 +44,17 @@ module Enumerable
 
     if items.is_a?(Array)
 
-      new_values = Array.new
+      new_values = []
 
-      items.my_each {|i| new_values.push(i) if yield(i) == true }
+      items.my_each { |i| new_values.push(i) if yield(i) == true }
 
-      return new_values
+      new_values
 
     elsif items.is_a?(Hash)
 
-      new_values = Hash.new
+      new_values = {}
 
-      items.my_each {|a, b| new_values.store(a, b) if yield(a, b) == true}
+      items.my_each { |a, b| new_values.store(a, b) if yield(a, b) == true }
       return new_values
     else
       return items
@@ -175,4 +176,4 @@ end
 
 end
 
-# rubocop: enable Metrics/ModuleLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+#rubocop: enable Metrics/ModuleLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
