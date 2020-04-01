@@ -1,19 +1,18 @@
 # rubocop: disable Metrics/ModuleLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 module Enumerable
   def my_each(&parm)
-
     return to_enum :my_each unless block_given?
 
-    item = self;
+    item = self
     i = 0
     while i < item.length
       if item.is_a?(Array)
         yield(item[i]) 
       elsif parm.arity == 1
-        yield  ( assoc item.keys[i] ) 
+        yield  (assoc item.keys[i])
       else
-        yield item.keys[i] , item[item.keys[i]]
-      end 
+        yield item.keys[i], item[item.keys[i]]
+      end
       i += 1
     end
    item
