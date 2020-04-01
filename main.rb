@@ -146,4 +146,29 @@ def my_count(*parms)
   return_value
 end
 
+def my_map(parms = nil)
+  return to_enum(:my_map) unless block_given?
+
+  mapped = []
+  my_each { |i| mapped << parms.call(i) } if block_given? && parms
+  my_each { |i| mapped << yield(i) } if parms.nil?
+  mapped
+end
+
+def my_inject(results = nil, sym = nil, &parms)
+  results = results.to_sym if results.is_a?(String) && !sym && !parms
+
+  if results.is_a?(Symbol) && !sym
+    parms = results.to_proc
+    results = nil
+  end
+
+  sym = sym.to_sym if sym.is_a?(String)
+  parms = sym.to_proc if sym.is_a?(Symbol)
+
+  my_each { |i| results = results.nil? ? i : parms.yield(results, i) }
+  results
+end
+end
+
 end
