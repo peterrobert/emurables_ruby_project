@@ -1,6 +1,6 @@
-module  Enumerable
-
-  def my_each ( &parm )
+# rubocop: disable Metrics/ModuleLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+module Enumerable
+  def my_each(&parm)
 
     return to_enum :my_each unless block_given?
 
@@ -19,7 +19,7 @@ module  Enumerable
    item
   end
 
-  def my_each_with_index ( &parm )
+  def my_each_with_index (&parm)
     return to_enum :my_each unless block_given?
     item = self;
     i = 0
@@ -61,7 +61,7 @@ module  Enumerable
     end
   end
 
-  def my_all?( parms = nil )
+  def my_all?(parms = nil)
 
     item = self;
 
@@ -176,12 +176,4 @@ end
 
 end
 
-
-
-a = [1,2,3,4,4,5,5,6,6,6,7,7,7]
-
-a.my_each do |i|
-
-  puts i
-
-end
+# rubocop: enable Metrics/ModuleLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
