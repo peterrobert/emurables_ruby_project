@@ -65,7 +65,7 @@ module Enumerable
 
   def my_all?(parms = nil)
     item = self
-
+    results = false
     if parms.nil? && !block_given?
       item.my_each do |value|
         results = value.nil? || !value == true
@@ -170,10 +170,10 @@ module Enumerable
     my_each { |i| results = results.nil? ? i : parms.yield(results, i) }
     results
   end
+end
 
-  def multiply_els(my_array)
-    my_array.my_inject { |result, value| result * value }
-  end
+def multiply_els(my_array)
+  my_array.my_inject { |result, value| result * value }
 end
 
 # rubocop: enable Metrics/ModuleLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
