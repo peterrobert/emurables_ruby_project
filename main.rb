@@ -120,18 +120,8 @@ module Enumerable
     res
   end
 
-  def my_none?(*parms)
-    my_each_with_index do |item, i|
-      if block_given?
-        return false if yield(item)
-      elsif parms.length == 1
-        return false if parms[0] == item
-      elsif item == true
-        return false
-      end
-      return true if i == length - 1
-    end
-    true if length.zero?
+  def my_none?(parms = nil ,&block)
+    !my_any?(parms,&block)
   end
 
   def my_count(*parms)
@@ -178,3 +168,9 @@ end
 
 # rubocop: enable Metrics/ModuleLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/MethodLength:
+
+p [1, 2, 3].my_none?(String)  #should return true
+
+p ['1', '2', '3'].my_none?(String)  #should return false
+
+p %w[dog door rod blade].my_none?(/z/)   #should return true
