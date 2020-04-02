@@ -99,29 +99,27 @@ module Enumerable
     end
   end
 
-  def my_any?(*parms)
-    item = self
-    res = false
-    if block_given?
-      item.my_each do |i|
-        res = true if yield(i)
-      end
-    elsif !parms[0].nil?
-      item.my_each do |i|
-        res = true if parms[0] == i
-      end
-    elsif item.empty? && parms[0].nil?
-      res = false
-    else
-      item.my_each do |i|
-        res = true if yield(i)
+  def my_any?(parms = nil)
+    my_each do |item|
+      if !parms.nil?
+        if parms.is_a?(Regexp)
+          return true if item.match(parms)
+        elsif parms.is_a?(Class)
+          return true if item.is_a?(parms)
+        elsif item == parms
+          return true
+        end
+      elsif block_given?
+        return true if yield(item)
+      elsif item
+        return true
       end
     end
-    res
+    false
   end
 
-  def my_none?(parms = nil ,&block)
-    !my_any?(parms,&block)
+  def my_none?(parms = nil, &block)
+    !my_any?(parms, &block)
   end
 
   def my_count(*parms)
@@ -168,9 +166,3 @@ end
 
 # rubocop: enable Metrics/ModuleLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/MethodLength:
-
-p [1, 2, 3].my_none?(String)  #should return true
-
-p ['1', '2', '3'].my_none?(String)  #should return false
-
-p %w[dog door rod blade].my_none?(/z/)   #should return true
