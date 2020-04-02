@@ -178,13 +178,3 @@ end
 
 # rubocop: enable Metrics/ModuleLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/MethodLength:
-
-
-
-p [1, 2, 3].my_inject { |memo, num| memo + num } #should return 6
-
-p [1, 2, 3].my_inject(1) { |memo, num| memo + num } #should return 7
-
-p [1, 2, 3].my_inject(:+)  #should return 6
-
-p [1, 2, 3].my_inject(1, :+)  #should return 7
