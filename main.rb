@@ -6,6 +6,7 @@ module Enumerable
 
     item = self
     i = 0
+    item = item.to_a if item.is_a? Range
     while i < item.length
       if item.is_a?(Array)
         yield(item[i])
